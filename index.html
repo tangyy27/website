@@ -196,30 +196,29 @@
           event.clientY >= jukeboxRect.top &&
           event.clientY <= jukeboxRect.bottom;
 
-        if (droppedOnJukebox) {
-          // Keep disc at drop position (fixed)
-          disc.style.left = event.pageX - shiftX + 'px';
-          disc.style.top = event.pageY - shiftY + 'px';
-          disc.style.position = 'fixed';
-          disc.style.zIndex = 1000;
+          if (droppedOnJukebox) {
+            // Run your jukebox drop logic here (e.g. play audio)
+            // But visually snap the disc back to original position anyway:
 
-          // Keep disc appended to body for free movement
-          document.body.appendChild(disc);
-        } else {
-          // Return disc to original position inside the grid
+            // Restore disc styles to snap back into grid
+            disc.style.position = originalPosition; // usually 'relative'
+            disc.style.left = '';
+            disc.style.top = '';
+            disc.style.zIndex = '';
 
-          // Remove fixed positioning styles
-          disc.style.position = originalPosition; // restore original CSS position (probably 'relative')
-          disc.style.left = '';
-          disc.style.top = '';
-          disc.style.zIndex = '';
+            // Append disc back to the disc grid container
+            discGrid.appendChild(disc);
 
-          // Remove any transition so it snaps back nicely
-          disc.style.transition = '';
+            // (Your jukebox logic here, e.g. play song based on disc)
+          } else {
+            // Return disc to original position inside the grid
 
-          // Append disc back to the original container (.disc-grid)
-          discGrid.appendChild(disc);
-        }
+            disc.style.position = originalPosition;
+            disc.style.left = '';
+            disc.style.top = '';
+            disc.style.zIndex = '';
+            discGrid.appendChild(disc);
+          }
       }, { once: true });
     }
 
