@@ -29,10 +29,7 @@
       color: white;
       text-align: center;
       position: relative;
-      background-image: url('assets/images/Background1.png');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
+      background-color:black;
     }
 
     body::before {
@@ -88,6 +85,8 @@
       top: 51%;
       left: 50%;
       transform: translate(-50%, -50%);
+      
+      cursor: default;
     }
 
     .disc-grid img {
@@ -100,42 +99,75 @@
       flex: 0 0 auto;
       position: relative;
     }
+
+    #audio-player {
+      position: fixed;
+      bottom: 320px;
+      left: 50%;
+      transform: translateX(-50%);
+      outline: none;
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      width: 300px;
+      display: none;
+      z-index: 20;
+    }
   </style>
 </head>
 <body>
   <h1>Jukebox</h1>
 
   <div class="disc-grid">
-    <img src="assets/images/C418 - 13.png" draggable = false alt="Disc 1" />
-    <img src="assets/images/C418 - cat.png" draggable = false alt="Disc 2" />
-    <img src="assets/images/C418 - blocks.png" draggable = false alt="Disc 3" />
-    <img src="assets/images/C418 - chirp.png" draggable = false alt="Disc 4" />
-    <img src="assets/images/C418 - far.png" draggable = false alt="Disc 5" />
-    <img src="assets/images/C418 - mall.png" draggable = false alt="Disc 6" />
-    <img src="assets/images/C418 - mellohi.png" draggable = false alt="Disc 7" />
-    <img src="assets/images/C418 - stal.png" draggable = false alt="Disc 8" />
-    <img src="assets/images/C418 - strad.png" draggable = false alt="Disc 9" />
-    <img src="assets/images/C418 - ward.png" draggable = false alt="Disc 10" />
-    <img src="assets/images/C418 - 11.png" draggable = false alt="Disc 11" />
-    <img src="assets/images/C418 - wait.png" draggable = false alt="Disc 12" />
-    <img src="assets/images/Lena Raine - otherside.png" draggable = false alt="Disc 13" />
-    <img src="assets/images/Samuel Åberg - 5.png" draggable = false alt="Disc 14" />
-    <img src="assets/images/Lena Raine - Pigstep.png" draggable = false alt="Disc 15" />
-    <img src="assets/images/Aaron Cherof - Relic.png" draggable = false alt="Disc 16" />
-    <img src="assets/images/Lena Raine - Creator.png" draggable = false alt="Disc 17" />
-    <img src="assets/images/Lena Raine - Creator (Music Box).png" draggable = false alt="Disc 19" />
-    <img src="assets/images/Aaron Cherof - Precipice.png" draggable = false alt="Disc 19" />
-    <img src="assets/images/Amos Roddy - Tears.png" draggable = false alt="Disc 20" />
+    <img src="assets/images/C418 - 13.png" draggable="false" alt="13" />
+    <img src="assets/images/C418 - cat.png" draggable="false" alt="cat" />
+    <img src="assets/images/C418 - blocks.png" draggable="false" alt="blocks" />
+    <img src="assets/images/C418 - chirp.png" draggable="false" alt="chirp" />
+    <img src="assets/images/C418 - far.png" draggable="false" alt="far" />
+    <img src="assets/images/C418 - mall.png" draggable="false" alt="mall" />
+    <img src="assets/images/C418 - mellohi.png" draggable="false" alt="mellohi" />
+    <img src="assets/images/C418 - stal.png" draggable="false" alt="stal" />
+    <img src="assets/images/C418 - strad.png" draggable="false" alt="strad" />
+    <img src="assets/images/C418 - ward.png" draggable="false" alt="ward" />
+    <img src="assets/images/C418 - 11.png" draggable="false" alt="11" />
+    <img src="assets/images/C418 - wait.png" draggable="false" alt="wait" />
+    <img src="assets/images/Lena Raine - otherside.png" draggable="false" alt="otherside" />
+    <img src="assets/images/Samuel Åberg - 5.png" draggable="false" alt="5" />
+    <img src="assets/images/Lena Raine - Pigstep.png" draggable="false" alt="Pigstep" />
+    <img src="assets/images/Aaron Cherof - Relic.png" draggable="false" alt="Relic" />
+    <img src="assets/images/Lena Raine - Creator.png" draggable="false" alt="Creator" />
+    <img src="assets/images/Lena Raine - Creator (Music Box).png" draggable="false" alt="Creator (Music Box)" />
+    <img src="assets/images/Aaron Cherof - Precipice.png" draggable="false" alt="Precipice" />
+    <img src="assets/images/Amos Roddy - Tears.png" draggable="false" alt="Tears" />
   </div>
 
   <div class="jukebox" id="jukebox">
-    <img src="assets/images/Block_Jukebox.png" draggable = false alt="Jukebox" />
+    <img src="assets/images/Block_Jukebox.png" draggable="false" alt="Jukebox" />
   </div>
+
+  <!-- Audio player element -->
+  <audio id="audio-player"></audio>
 
   <script>
     const discGrid = document.querySelector('.disc-grid');
     const discs = discGrid.querySelectorAll('img');
     const jukebox = document.getElementById('jukebox');
+    const audioPlayer = document.getElementById('audio-player');
+
+    function updateCursor() {
+      if (!audioPlayer.paused) {
+        jukebox.style.cursor = 'pointer';
+      } else {
+        jukebox.style.cursor = 'default';
+      }
+    }
+
+    jukebox.addEventListener('click', () => {
+      if (!audioPlayer.paused) {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        updateCursor()
+      }
+    });
 
     discs.forEach(disc => {
       disc.style.width = '64px';
@@ -154,9 +186,6 @@
 
         const shiftX = e.clientX - rect.left;
         const shiftY = e.clientY - rect.top;
-
-        const originalLeft = rect.left + window.pageXOffset;
-        const originalTop = rect.top + window.pageYOffset;
 
         disc.style.position = 'fixed';
         disc.style.zIndex = 1000;
@@ -177,38 +206,35 @@
         document.addEventListener('mousemove', onMouseMove);
 
         document.addEventListener('mouseup', function onMouseUp(event) {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
 
-        const jukeboxRect = jukebox.getBoundingClientRect();
+          const jukeboxRect = jukebox.getBoundingClientRect();
 
-        const droppedOnJukebox =
-          event.clientX >= jukeboxRect.left &&
-          event.clientX <= jukeboxRect.right &&
-          event.clientY >= jukeboxRect.top &&
-          event.clientY <= jukeboxRect.bottom;
+          const droppedOnJukebox =
+            event.clientX >= jukeboxRect.left &&
+            event.clientX <= jukeboxRect.right &&
+            event.clientY >= jukeboxRect.top &&
+            event.clientY <= jukeboxRect.bottom;
 
           if (droppedOnJukebox) {
-            disc.style.position = originalPosition;
-            disc.style.left = '';
-            disc.style.top = '';
-            disc.style.zIndex = '';
+            const discName = disc.alt.trim();
 
-            discGrid.appendChild(disc);
-
-          } else {
-
-            disc.style.position = originalPosition;
-            disc.style.left = '';
-            disc.style.top = '';
-            disc.style.zIndex = '';
-            discGrid.appendChild(disc);
+            audioPlayer.src = `assets/audio/${discName}.mp3`;
+            audioPlayer.play();
+            updateCursor();
           }
-      }, { once: true });
-    }
 
-    disc.ondragstart = () => false;
-  });
-</script>
+          disc.style.position = originalPosition;
+          disc.style.left = '';
+          disc.style.top = '';
+          disc.style.zIndex = '';
+          discGrid.appendChild(disc);
+        }, { once: true });
+      }
+
+      disc.ondragstart = () => false;
+    });
+  </script>
 </body>
 </html>
