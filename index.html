@@ -35,7 +35,6 @@
       background-position: center;
     }
 
-    /* Dark overlay */
     body::before {
       content: "";
       position: fixed;
@@ -68,13 +67,13 @@
       position: fixed;
       bottom: 0;
       left: 0;
-      width: 100vw;            /* full viewport width */
-      padding: 10px 0;         /* vertical padding */
-      background: rgba(0,0,0,0.5); /* optional translucent background */
+      width: 100vw;
+      padding: 10px 0;
+      background: rgba(0,0,0,0.5);
       
       display: flex;
       flex-wrap: wrap;
-      justify-content: center; /* center discs horizontally */
+      justify-content: center;
       gap: 0;
       box-sizing: border-box;
       z-index: 10;
@@ -94,12 +93,12 @@
     .disc-grid img {
       width: 32px;
       height: 32px;
-      object-fit: contain; /* or 'fill' if you want to stretch */
+      object-fit: contain;
       image-rendering: pixelated;
       margin: 0 2px;
       display: block;
-      flex: 0 0 auto; /* don’t let flexbox change size */
-      position: relative; /* for dragging */
+      flex: 0 0 auto;
+      position: relative;
     }
   </style>
 </head>
@@ -151,18 +150,14 @@
 
         e.preventDefault();
 
-        // Get current position of the disc relative to the viewport
         const rect = disc.getBoundingClientRect();
 
-        // Calculate offsets of mouse within the disc
         const shiftX = e.clientX - rect.left;
         const shiftY = e.clientY - rect.top;
 
-        // Store original absolute position relative to the document
         const originalLeft = rect.left + window.pageXOffset;
         const originalTop = rect.top + window.pageYOffset;
 
-        // Set disc to fixed positioning to freely move it on screen
         disc.style.position = 'fixed';
         disc.style.zIndex = 1000;
         disc.style.left = rect.left + 'px';
@@ -175,15 +170,12 @@
 
         moveAt(e.pageX, e.pageY);
 
-        // Mouse move handler to move disc with mouse
         function onMouseMove(event) {
           moveAt(event.pageX, event.pageY);
         }
 
-        // Add global mousemove listener to drag disc
         document.addEventListener('mousemove', onMouseMove);
 
-        // Mouse up handler to drop disc
         document.addEventListener('mouseup', function onMouseUp(event) {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
@@ -197,21 +189,14 @@
           event.clientY <= jukeboxRect.bottom;
 
           if (droppedOnJukebox) {
-            // Run your jukebox drop logic here (e.g. play audio)
-            // But visually snap the disc back to original position anyway:
-
-            // Restore disc styles to snap back into grid
-            disc.style.position = originalPosition; // usually 'relative'
+            disc.style.position = originalPosition;
             disc.style.left = '';
             disc.style.top = '';
             disc.style.zIndex = '';
 
-            // Append disc back to the disc grid container
             discGrid.appendChild(disc);
 
-            // (Your jukebox logic here, e.g. play song based on disc)
           } else {
-            // Return disc to original position inside the grid
 
             disc.style.position = originalPosition;
             disc.style.left = '';
