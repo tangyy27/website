@@ -183,6 +183,7 @@
   const jukebox = document.getElementById('jukebox');
   const audioPlayer = document.getElementById('audio-player');
   const tooltip = document.getElementById('tooltip');
+  let dragging = false;
 
   function updateCursor() {
     jukebox.style.cursor = (!audioPlayer.paused && !audioPlayer.ended) ? 'pointer' : 'default';
@@ -205,11 +206,15 @@
     disc.addEventListener('mousedown', startDrag);
 
     function startDrag(e) {
+      tooltip.style.display = 'none';
+      
       const originalPosition = disc.style.position || 'relative';
       e.preventDefault();
       const rect = disc.getBoundingClientRect();
       const shiftX = e.clientX - rect.left;
       const shiftY = e.clientY - rect.top;
+
+      dragging = true;
 
       disc.style.position = 'fixed';
       disc.style.zIndex = 1000;
@@ -232,6 +237,8 @@
       document.addEventListener('mouseup', function onMouseUp(event) {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+
+        dragging = false;
 
         const jukeboxRect = jukebox.getBoundingClientRect();
         const droppedOnJukebox =
@@ -301,6 +308,10 @@
 
         tooltip.style.left = `${x}px`;
         tooltip.style.top = `${y}px`;
+
+        if (dragging) {
+          tooltip.style.display = 'none';
+        }
       }
     });
 
