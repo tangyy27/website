@@ -112,6 +112,35 @@
       display: none;
       z-index: 20;
     }
+
+    .tooltip {
+      position: absolute;
+      background-color: rgba(5, 0, 20, 252);
+      border: 4px solid rgba(40, 0, 70, 252);;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-family: 'Minecraft', sans-serif;
+      font-size: 18px;
+      color: #fff;
+      pointer-events: none;
+      z-index: 999;
+      white-space: pre-line;
+      box-shadow: 0 0 5px #000;
+      display: none;
+    }
+
+    .tooltip .gold {
+      color: #fcd000;
+    }
+
+    .tooltip .gray {
+      color: #aaaaaa;
+    }
+
+    .tooltip .italic {
+      font-style: italic;
+    }
+
   </style>
 </head>
 <body>
@@ -139,6 +168,8 @@
     <img src="assets/images/Aaron Cherof - Precipice.png" draggable="false" alt="Precipice" />
     <img src="assets/images/Amos Roddy - Tears.png" draggable="false" alt="Tears" />
   </div>
+  
+  <div id="tooltip" class="tooltip"></div>
 
   <div class="jukebox" id="jukebox">
     <img src="assets/images/Block_Jukebox.png" draggable="false" alt="Jukebox" />
@@ -147,93 +178,141 @@
   <audio id="audio-player"></audio>
 
   <script>
-    const discGrid = document.querySelector('.disc-grid');
-    const discs = discGrid.querySelectorAll('img');
-    const jukebox = document.getElementById('jukebox');
-    const audioPlayer = document.getElementById('audio-player');
+  const discGrid = document.querySelector('.disc-grid');
+  const discs = discGrid.querySelectorAll('img');
+  const jukebox = document.getElementById('jukebox');
+  const audioPlayer = document.getElementById('audio-player');
+  const tooltip = document.getElementById('tooltip');
 
-    function updateCursor() {
-      if (!audioPlayer.paused) {
-        jukebox.style.cursor = 'pointer';
-      } else {
-        jukebox.style.cursor = 'default';
+  function updateCursor() {
+    jukebox.style.cursor = (!audioPlayer.paused && !audioPlayer.ended) ? 'pointer' : 'default';
+  }
+
+  jukebox.addEventListener('click', () => {
+    if (!audioPlayer.paused) {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      updateCursor();
+    }
+  });
+
+  discs.forEach(disc => {
+    disc.style.width = '64px';
+    disc.style.height = '64px';
+    disc.style.objectFit = 'contain';
+    disc.style.position = 'relative';
+    disc.style.imageRendering = "pixelated";
+    disc.addEventListener('mousedown', startDrag);
+
+    function startDrag(e) {
+      const originalPosition = disc.style.position || 'relative';
+      e.preventDefault();
+      const rect = disc.getBoundingClientRect();
+      const shiftX = e.clientX - rect.left;
+      const shiftY = e.clientY - rect.top;
+
+      disc.style.position = 'fixed';
+      disc.style.zIndex = 1000;
+      disc.style.left = rect.left + 'px';
+      disc.style.top = rect.top + 'px';
+
+      function moveAt(pageX, pageY) {
+        disc.style.left = (pageX - shiftX) + 'px';
+        disc.style.top = (pageY - shiftY) + 'px';
       }
+
+      moveAt(e.pageX, e.pageY);
+
+      function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+
+      document.addEventListener('mouseup', function onMouseUp(event) {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+
+        const jukeboxRect = jukebox.getBoundingClientRect();
+        const droppedOnJukebox =
+          event.clientX >= jukeboxRect.left &&
+          event.clientX <= jukeboxRect.right &&
+          event.clientY >= jukeboxRect.top &&
+          event.clientY <= jukeboxRect.bottom;
+
+        if (droppedOnJukebox) {
+          const discName = disc.alt.trim();
+          audioPlayer.src = `assets/sounds/${discName}.mp3`;
+          audioPlayer.play();
+          updateCursor();
+        }
+
+        disc.style.position = originalPosition;
+        disc.style.left = '';
+        disc.style.top = '';
+        disc.style.zIndex = '';
+        discGrid.appendChild(disc);
+      }, { once: true });
     }
 
-    jukebox.addEventListener('click', () => {
-      if (!audioPlayer.paused) {
-        audioPlayer.pause();
-        audioPlayer.currentTime = 0;
-        updateCursor()
+    disc.ondragstart = () => false;
+
+    const tooltipTexts = {
+      "13": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - 13</span>`,
+      "cat": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - cat</span>`,
+      "blocks": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - blocks</span>`,
+      "chirp": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - chirp</span>`,
+      "far": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - far</span>`,
+      "mall": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - mall</span>`,
+      "mellohi": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - mellohi</span>`,
+      "stal": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - stal</span>`,
+      "strad": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - strad</span>`,
+      "ward": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - ward</span>`,
+      "11": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - 11</span>`,
+      "wait": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - wait</span>`,
+      "otherside": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - otherside</span>`,
+      "5": `<span class="gold">Music Disc</span>\n<span class="gray italic">Samuel Åberg - 5</span>`,
+      "Pigstep": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Pigstep</span>`,
+      "Relic": `<span class="gold">Music Disc</span>\n<span class="gray italic">Aaron Cherof - Relic</span>`,
+      "Creator": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Creator</span>`,
+      "Creator (Music Box)": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Creator (Music Box)</span>`,
+      "Precipice": `<span class="gold">Music Disc</span>\n<span class="gray italic">Aaron Cherof - Precipice</span>`,
+      "Tears": `<span class="gold">Music Disc</span>\n<span class="gray italic">Amos Roddy - Tears</span>`,
+    };
+
+    disc.addEventListener('mousemove', (e) => {
+      const name = disc.alt.trim();
+      if (tooltipTexts[name]) {
+        tooltip.innerHTML = tooltipTexts[name];
+        tooltip.style.display = 'block';
+
+        const tooltipRect = tooltip.getBoundingClientRect();
+        const padding = 12;
+        let x = e.pageX + padding;
+        let y = e.pageY - padding * 2;
+
+        if (x + tooltipRect.width > window.innerWidth) {
+          x = e.pageX - tooltipRect.width - padding;
+        }
+
+        if (y + tooltipRect.height > window.innerHeight) {
+          y = e.pageY - tooltipRect.height + padding;
+        }
+
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
       }
     });
 
-    discs.forEach(disc => {
-      disc.style.width = '64px';
-      disc.style.height = '64px';
-      disc.style.objectFit = 'contain';
-      disc.style.position = 'relative';
-      disc.style.imageRendering = "pixelated";
-      disc.addEventListener('mousedown', startDrag);
-
-      function startDrag(e) {
-        const originalPosition = disc.style.position || 'relative';
-
-        e.preventDefault();
-
-        const rect = disc.getBoundingClientRect();
-
-        const shiftX = e.clientX - rect.left;
-        const shiftY = e.clientY - rect.top;
-
-        disc.style.position = 'fixed';
-        disc.style.zIndex = 1000;
-        disc.style.left = rect.left + 'px';
-        disc.style.top = rect.top + 'px';
-
-        function moveAt(pageX, pageY) {
-          disc.style.left = (pageX - shiftX) + 'px';
-          disc.style.top = (pageY - shiftY) + 'px';
-        }
-
-        moveAt(e.pageX, e.pageY);
-
-        function onMouseMove(event) {
-          moveAt(event.pageX, event.pageY);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        document.addEventListener('mouseup', function onMouseUp(event) {
-          document.removeEventListener('mousemove', onMouseMove);
-          document.removeEventListener('mouseup', onMouseUp);
-
-          const jukeboxRect = jukebox.getBoundingClientRect();
-
-          const droppedOnJukebox =
-            event.clientX >= jukeboxRect.left &&
-            event.clientX <= jukeboxRect.right &&
-            event.clientY >= jukeboxRect.top &&
-            event.clientY <= jukeboxRect.bottom;
-
-          if (droppedOnJukebox) {
-            const discName = disc.alt.trim();
-
-            audioPlayer.src = `assets/sounds/${discName}.mp3`;
-            audioPlayer.play();
-            updateCursor();
-          }
-
-          disc.style.position = originalPosition;
-          disc.style.left = '';
-          disc.style.top = '';
-          disc.style.zIndex = '';
-          discGrid.appendChild(disc);
-        }, { once: true });
-      }
-
-      disc.ondragstart = () => false;
+    disc.addEventListener('mouseleave', () => {
+      tooltip.style.display = 'none';
     });
-  </script>
+  });
+
+  audioPlayer.addEventListener('ended', () => {
+    updateCursor();
+  }); 
+</script>
+
 </body>
 </html>
