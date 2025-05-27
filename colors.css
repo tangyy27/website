@@ -1,0 +1,29 @@
+:root {
+  --color-gold: #000;
+  --color-dark-blue: #0000AA;
+  --color-dark-green: #00AA00;
+  --color-dark-red: #AA0000;
+  --color-dark-purple: #AA00AA;
+  --color-gold: #FFAA00;
+  --color-gray: #AAAAAA;
+  --color-dark-gray: #555555;
+  --color-blue: #5555FF;
+  --color-green: #55FF55;
+  --color-aqua: #55FFFF;
+  --color-red: #FF5555;
+  --color-light-purple: #FF55FF;
+  --color-yellow: #FFFF55;
+  --color-white: #FFFFFF;
+
+  --color-minecoin-gold: #DDD605;
+  --color-material-quartz: #E3D4D1;
+  --color-material-iron: #CECACA;
+  --color-material-netherite: #443A3B;
+  --color-meterial-redstone: #971607;
+  --color-material-copper: #B4684D;
+  --color-material-gold: #DEB12D;
+  --color-material-emerald: #47A036;
+  --color-material-diamond: #2CBAA8;
+  --color-material-lapis: #21497B;
+  --color-material-amethyst: #9A5CC6;
+}
