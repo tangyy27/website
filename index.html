@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My First Website with Disc Grid</title>
   <style>
     @font-face {
       font-family: 'Minecraft';
@@ -30,6 +29,8 @@
       text-align: center;
       position: relative;
       background-color:black;
+      background-image: url("assets/images/dirtbackground.png");
+      background-size: 64px;
     }
 
     body::before {
@@ -89,6 +90,30 @@
       cursor: default;
     }
 
+    .note {
+      position: fixed;
+      width: 80px;
+      height: 80px;
+      image-rendering: pixelated;
+      pointer-events: none;
+      z-index: 999;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: floatUp 0.4s ease-out forwards;
+      filter: 
+        hue-rotate(100deg)
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate(-50%, -170%) scale(1);
+      }
+      100% {
+        transform: translate(-50%, -270%) scale(1);
+      }
+    }
+
     .disc-grid img {
       width: 32px;
       height: 32px;
@@ -113,6 +138,22 @@
       z-index: 20;
     }
 
+    .tooltip .gold {
+      color: var(--color-gold)
+    }
+
+    .tooltip .aqua {
+      color: var(--color-aqua)
+    }
+
+    .tooltip ,blue {
+      color: var(--color-blue)
+    }
+
+    .tooltip .gray {
+      color: var(--color-gray)
+    }
+
     .tooltip {
       position: absolute;
       background-color: rgba(5, 0, 20, 252);
@@ -121,30 +162,20 @@
       border-radius: 4px;
       font-family: 'Minecraft', sans-serif;
       font-size: 18px;
-      color: #fff;
+      color: var();
       pointer-events: none;
       z-index: 999;
       white-space: pre-line;
       box-shadow: 0 0 5px #000;
       display: none;
+      text-align: left;
     }
-
-    .tooltip .gold {
-      color: #fcd000;
-    }
-
-    .tooltip .gray {
-      color: #aaaaaa;
-    }
-
-    .tooltip .italic {
-      font-style: italic;
-    }
-
   </style>
 </head>
 <body>
   <h1>Jukebox</h1>
+
+  <link rel="stylesheet" href="colors.css" />
 
   <div class="disc-grid">
     <img src="assets/images/C418 - 13.png" draggable="false" alt="13" />
@@ -265,27 +296,28 @@
     disc.ondragstart = () => false;
 
     const tooltipTexts = {
-      "13": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - 13</span>`,
-      "cat": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - cat</span>`,
-      "blocks": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - blocks</span>`,
-      "chirp": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - chirp</span>`,
-      "far": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - far</span>`,
-      "mall": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - mall</span>`,
-      "mellohi": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - mellohi</span>`,
-      "stal": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - stal</span>`,
-      "strad": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - strad</span>`,
-      "ward": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - ward</span>`,
-      "11": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - 11</span>`,
-      "wait": `<span class="gold">Music Disc</span>\n<span class="gray italic">C418 - wait</span>`,
-      "otherside": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - otherside</span>`,
-      "5": `<span class="gold">Music Disc</span>\n<span class="gray italic">Samuel Åberg - 5</span>`,
-      "Pigstep": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Pigstep</span>`,
-      "Relic": `<span class="gold">Music Disc</span>\n<span class="gray italic">Aaron Cherof - Relic</span>`,
-      "Creator": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Creator</span>`,
-      "Creator (Music Box)": `<span class="gold">Music Disc</span>\n<span class="gray italic">Lena Raine - Creator (Music Box)</span>`,
-      "Precipice": `<span class="gold">Music Disc</span>\n<span class="gray italic">Aaron Cherof - Precipice</span>`,
-      "Tears": `<span class="gold">Music Disc</span>\n<span class="gray italic">Amos Roddy - Tears</span>`,
-    };
+  "13": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - 13</span>`,
+  "cat": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - cat</span>`,
+  "blocks": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - blocks</span>`,
+  "chirp": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - chirp</span>`,
+  "far": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - far</span>`,
+  "mall": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - mall</span>`,
+  "mellohi": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - mellohi</span>`,
+  "stal": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - stal</span>`,
+  "strad": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - strad</span>`,
+  "ward": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - ward</span>`,
+  "11": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - 11</span>`,
+  "wait": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">C418 - wait</span>`,
+  "otherside": `<span class="aqua">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Lena Raine - otherside</span>`,
+  "5": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Samuel Åberg - 5</span>`,
+  "Pigstep": `<span class="aqua">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Lena Raine - Pigstep</span>`,
+  "Relic": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Aaron Cherof - Relic</span>`,
+  "Creator": `<span class="aqua">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Lena Raine - Creator</span>`,
+  "Creator (Music Box)": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Lena Raine - Creator (Music Box)</span>`,
+  "Precipice": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Aaron Cherof - Precipice</span>`,
+  "Tears": `<span class="gold">Music Disc</span>\n<span class="tools"><span class="blue">Tools & Utilities</span>\n<span class="gray italic">Amos Roddy - Tears</span>`,
+};
+
 
     disc.addEventListener('mousemove', (e) => {
       const name = disc.alt.trim();
@@ -323,6 +355,30 @@
   audioPlayer.addEventListener('ended', () => {
     updateCursor();
   }); 
+
+  let currentHue = 0;
+
+  function spawnNote() {
+    const note = document.createElement('img');
+    note.src = 'assets/images/note.png';
+    note.className = 'note';
+    
+    currentHue = Math.floor(Math.random() * (80 - 50 + 1)) + 50;
+    
+    note.style.filter = `hue-rotate(${currentHue}deg) brightness(2)` ;
+
+    document.body.appendChild(note);
+
+    setTimeout(() => {
+      note.remove();
+  }, 400); // remove after 0.4 seconds
+}
+
+setInterval(() => {
+  if (!audioPlayer.paused && !audioPlayer.ended) {
+    spawnNote();
+  }
+}, 1000);
 </script>
 
 </body>
