@@ -53,13 +53,11 @@
       user-select: none;
     }
 
-    /* Text span with higher z-index so text is always on top */
     .cell-text {
       position: relative;
       z-index: 2;
     }
 
-    /* Red X behind text for marked cells */
     .cell.marked::after {
       content: '';
       position: absolute;
@@ -72,7 +70,6 @@
       z-index: 0;
     }
 
-    /* Free cell styles */
     .cell.free {
       background-color: transparent;
       color: white;
@@ -80,7 +77,6 @@
       cursor: default; /* not clickable */
     }
 
-    /* Yellow X always visible on free cell */
     .cell.free::after {
       content: '';
       position: absolute;
@@ -109,7 +105,8 @@
       "Confusing", "Quiz", "Claimable Item with Timer", "Really Easy", "Really Hard",
       "Truls", "Enter VIP Without Buying", "Brainrot", "Slap Tower", "\"Pinning\" in Name",
       "Game Name Makes No Sense", "Actual Creativity", "NEaT", "Crazy Damage Bricks", "Creative Tower Frame",
-      "Gears Unusable Without Paying", "Final Stretch Over Nothing", "Description Doesn't Make Sense", "Opaque Cancollide False Section", "Obby For Reward!!!"
+      "Gears Unusable Without Paying", "Final Stretch Over Nothing", "Description Doesn't Make Sense", "Opaque Cancollide False Section", "Obby For Reward!!!",
+      "Favorite This Game?"
     ];
 
     function shuffle(array) {
