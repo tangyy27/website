@@ -17,13 +17,41 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 40px;
+      padding-top: 20px;
+      color: white;
+    }
+
+    textarea {
+      width: 80%;
+      max-width: 500px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #111;
+      color: white;
+      border: 2px solid #00ccff;
+      border-radius: 6px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background-color: #0099cc;
     }
 
     .bingo-card {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      width: 400px;
+      width: 500px;
       aspect-ratio: 1 / 1;
       justify-content: center;
     }
@@ -35,18 +63,15 @@
       justify-content: center;
       background-color: #000000;
       border: 2px solid #00ccff;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       padding: 6px;
       text-align: center;
       color: white;
-
       aspect-ratio: 1 / 1;
       width: 100px;
       height: 100px;
-
       word-break: break-word;
-      white-space: normal;
       overflow-wrap: break-word;
       box-sizing: border-box;
       cursor: pointer;
@@ -74,7 +99,7 @@
       background-color: transparent;
       color: white;
       border-color: #00ccff;
-      cursor: default; /* not clickable */
+      cursor: default;
     }
 
     .cell.free::after {
@@ -91,10 +116,13 @@
   </style>
 </head>
 <body>
+  <textarea id="customInput" rows="6" placeholder="Paste your bingo items here (comma or line-separated)..."></textarea>
+  <button onclick="generateCustomBoard()">Generate Board</button>
+
   <div class="bingo-card" id="bingoCard"></div>
 
   <script>
-    const bingoWords = [
+    const defaultWords = [
       "Outside Troll Button", "Unindicated Instakills", "Overused Music", "Copy Paste", "GUI Overdose", 
       "Cash Grab", "Ending Couch/Bench", "Skippable Outside", "Has Win Badge", "Sword Givers",
       "Entire Tower is Skippable", "Korean Elevators", "Donation Board", "Visible Building Kit", "Many Unintended Skips",
@@ -115,11 +143,31 @@
       return array.sort(() => Math.random() - 0.5);
     }
 
-    function generateBingoCard() {
+    function generateCustomBoard() {
+      const input = document.getElementById("customInput").value;
+      let items;
+
+      if (!input.trim()) {
+        // Fallback to default if input is empty
+        items = [...defaultWords];
+      } else {
+        if (input.includes(',')) {
+          items = input.split(',').map(word => word.trim());
+        } else {
+          items = input.split('\n').map(word => word.trim());
+        }
+        items = items.filter(item => item.length > 0);
+      }
+
+      if (items.length < 24) {
+        alert("Please enter at least 24 items.");
+        return;
+      }
+
       const container = document.getElementById("bingoCard");
       container.innerHTML = "";
 
-      const shuffled = shuffle([...bingoWords]);
+      const shuffled = shuffle([...items]);
       let index = 0;
 
       for (let i = 0; i < 25; i++) {
@@ -132,10 +180,8 @@
         if (i === 12) {
           textSpan.textContent = "FREE";
           cell.classList.add("free");
-          // No click listener on free cell
         } else {
           textSpan.textContent = shuffled[index++];
-          // Add click toggling only for non-free cells
           cell.addEventListener("click", () => {
             cell.classList.toggle("marked");
           });
@@ -146,7 +192,8 @@
       }
     }
 
-    generateBingoCard();
+    // Automatically generate a default board on load
+    window.onload = generateCustomBoard;
   </script>
 </body>
 </html>
