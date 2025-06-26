@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slop Tower Roulette</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: black;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #0099cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Slop Tower Roulette</h1>
+  <button onclick="goToRandomLink()">New Slop Tower</button>
+
+  <script>
+    const links = [
+      "https://www.roblox.com/games/83312952548612/2",
+    ];
+
+    function goToRandomLink() {
+      const randomIndex = Math.floor(Math.random() * links.length);
+      const randomLink = links[randomIndex];
+      window.location.href = randomLink;
+    }
+  </script>
+</body>
+</html>
