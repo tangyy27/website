@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Roblox Games</title>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; background:#f0f0f0; padding:20px; }
+    .game-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
+    .game-card { background:white; border-radius:10px; overflow:hidden; text-align:center; }
+    .game-card img { width:100%; display:block; }
+    .game-card a { text-decoration:none; color:black; display:block; padding:10px; font-weight:bold; }
+  </style>
+</head>
+<body>
+<h1>My Roblox Games</h1>
+<div class="game-grid" id="gameGrid"></div>
+
+<script>
+const gameList = [
+  {link:"https://www.roblox.com/games/4924922222"}, // Brookhaven
+  {link:"https://www.roblox.com/games/2753915549"}, // Blox Fruits
+  {link:"https://www.roblox.com/games/142823291"},  // Murder Mystery 2
+  {link:"https://www.roblox.com/games/606849621"},  // Jailbreak
+  {link:"https://www.roblox.com/games/2788229376"}  // Da Hood
+];
+
+const grid = document.getElementById("gameGrid");
+
+// Helper to get game info via proxy (avoids CORS)
+async function getGameInfo(placeId) {
+  const url = `https://corsproxy.io/?https://games.roblox.com/v1/games/multiget-place-details?placeIds=${placeId}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data && data.length > 0 && data[0].name) {
+      return {
+        name: data[0].name,
+        thumbnail: `https://tr.rbxcdn.com/${data[0].rootPlaceId}/768/768/Image/Png`, // might still fail for some
+        link: `https://www.roblox.com/games/${data[0].rootPlaceId}`
+      };
+    }
+  } catch(e) {
+    console.log("Error fetching game info:", e);
+  }
+  return null;
+}
+
+// Display games
+gameList.forEach(async game => {
+  const match = game.link.match(/\/games\/(\d+)/);
+  if (!match) return;
+  const placeId = match[1];
+
+  const info = await getGameInfo(placeId);
+  if (!info) return;
+
+  const card = document.createElement("div");
+  card.className = "game-card";
+  card.innerHTML = `
+    <a href="${info.link}" target="_blank">
+      <img src="${info.thumbnail}" alt="${info.name}">
+      <span>${info.name}</span>
+    </a>
+  `;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
